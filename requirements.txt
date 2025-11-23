@@ -1,0 +1,4 @@
+trafilatura==1.8.0
+markdownify==0.11.6
+beautifulsoup4==4.12.3
+requests==2.32.3
