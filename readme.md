@@ -56,10 +56,19 @@ content/
 
 ## Known Issues
 
-* Custom HTML designed for Blogger themes may not convert correctly.
-  Some styling attributes will be removed, and some elements may be written as incomplete HTML.
-  Please review those posts manually.
+* **Windows Installation**: The script may fail to install on Windows due to dependency compilation issues (specifically lxml).
 
+    Solution: Use Docker installation method instead
+
+## Conversion Limitations
+
+  * Custom HTML designed for Blogger themes may not convert correctly.
+    Some styling attributes will be removed, and some elements may be written as incomplete HTML.
+    Please review those posts manually.
+
+  * Complex tables with colspan/rowspan may not render properly
+
+  * Some Blogger-specific widgets and JavaScript elements will be lost in conversion
 ## License
 
 This project is licensed under the MIT License.
