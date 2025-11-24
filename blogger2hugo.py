@@ -80,6 +80,19 @@ def convert_tables(soup):
         md = table_to_markdown(table)
         table.replace_with(NavigableString(md if md else "\n\n"+str(table)+"\n\n"))
 
+# link conversion
+
+def convert_links(soup):
+    for a in soup.find_all("a"):
+        href = a.get("href")
+        text = a.get_text(strip=True)
+        if not href:
+            continue
+        # Skip iframed embeds or empty text
+        if text == "" or href.startswith("javascript:"):
+            continue
+        a.replace_with(NavigableString(f"[{text}]({href})"))
+
 # =====================================================
 # HTML Cleaning + Media + Embed
 # =====================================================
@@ -143,6 +156,7 @@ def clean_html(html, image_dir, slug):
         iframe.replace_with(NavigableString(str(iframe)))
 
     convert_tables(soup)
+    convert_links(soup)
     return str(soup)
 
 def html_to_markdown(html):
