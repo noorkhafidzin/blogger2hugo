@@ -170,7 +170,7 @@ def html_to_markdown(html):
 # Frontmatter
 # =====================================================
 
-def frontmatter(title, date, updated, tags, permalink, draft_flag):
+def frontmatter(title, date, updated, tags_yaml, permalink, draft_flag):
     title = title.replace('"', '\\"')  # escape quotes to prevent YAML break
     aliases = f"aliases:\n  - /{permalink}\n" if permalink else ""
     return (
