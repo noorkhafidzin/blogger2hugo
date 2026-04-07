@@ -178,7 +178,7 @@ def frontmatter(title, date, updated, tags, permalink, draft_flag):
         f'title: "{title}"\n'
         f"date: {date}\n"
         f"lastmod: {updated}\n"
-        f"tags: {tags}\n"
+        f"tags: {tags_yaml}\n"
         f"{aliases}"
         f"draft: {draft_flag}\n"
         "---\n\n"
@@ -238,7 +238,7 @@ def convert_atom(atom_file, output_dir):
         markdown = html_to_markdown(cleaned)
 
         tags = [t.attrib.get("term") for t in entry.findall("atom:category", ATOM_NS) if t.attrib.get("term")]
-        tags = str(tags)
+        tags_yaml = "[" + ", ".join(f'"{t}"' for t in tags) + "]"
 
         with open(os.path.join(post_dir, "index.md"), "w", encoding="utf-8") as f:
             f.write(frontmatter(title, published, updated, tags, permalink, draft_flag))
