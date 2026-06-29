@@ -54,12 +54,6 @@ content/
        └─ images/
 ```
 
-## Known Issues
-
-* **Windows Installation**: The script may fail to install on Windows due to dependency compilation issues (specifically lxml).
-
-    Solution: Use Docker installation method instead
-
 ## Conversion Limitations
 
   * Custom HTML designed for Blogger themes may not convert correctly.
