@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, re, sys, requests, shutil, concurrent.futures
+import os, re, sys, requests, shutil, hashlib, concurrent.futures
 import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup, NavigableString
 from markdownify import markdownify
@@ -14,12 +14,12 @@ ATOM_NS = {
 # =====================================================
 
 def safe_mkdir(path):
-    if not os.path.exists(path):
+    if not os.path.isdir(path):
         os.makedirs(path)
 
 def extract_text(element, tag, ns=ATOM_NS, default=""):
     el = element.find(tag, ns)
-    return el.text.strip() if el is not None and el.text else default
+    return el.text.strip() if el is not None and el.text is not None else default
 
 def download_file(url, local_path):
     try:
@@ -28,7 +28,7 @@ def download_file(url, local_path):
             with open(local_path, "wb") as f:
                 shutil.copyfileobj(r.raw, f)
             return True
-    except:
+    except (requests.RequestException, IOError, OSError):
         pass
     return False
 
@@ -119,7 +119,7 @@ def clean_html(html, image_dir, slug):
             img.decompose()
             continue
         ext = os.path.splitext(src.split("?")[0])[1][:5] or ".jpg"
-        filename = sanitize_filename(f"{slug}-{abs(hash(src))}{ext}")
+        filename = sanitize_filename(f"{slug}-{hashlib.sha256(src.encode()).hexdigest()[:12]}{ext}")
         local_path = os.path.join(image_dir, filename)
         imgJobs.append((img, src, filename, local_path))
 
@@ -163,7 +163,7 @@ def html_to_markdown(html):
     try:
         md = markdownify(html, heading_style="ATX", strip=['a'])
         return md if md.strip() else html
-    except:
+    except Exception:
         return html
 
 # =====================================================
@@ -223,7 +223,7 @@ def convert_atom(atom_file, output_dir):
                 title_fallback = extract_text(entry, "atom:id", ATOM_NS).split("-")[-1]
             permalink = sanitize_filename(title_fallback.lower().replace(" ", "-")) + ".html"
         
-        slug = sanitize_filename(permalink.replace(".html",""))
+        slug = sanitize_filename(re.sub(r"\.html$", "", permalink))
 
 
         post_dir = os.path.join(base_dir, slug)
@@ -241,7 +241,7 @@ def convert_atom(atom_file, output_dir):
         tags_yaml = "[" + ", ".join(f'"{t}"' for t in tags) + "]"
 
         with open(os.path.join(post_dir, "index.md"), "w", encoding="utf-8") as f:
-            f.write(frontmatter(title, published, updated, tags, permalink, draft_flag))
+            f.write(frontmatter(title, published, updated, tags_yaml, permalink, draft_flag))
             f.write(markdown)
 
         print(f"[OK] /posts/{slug}/index.md | draft={draft_flag}")
