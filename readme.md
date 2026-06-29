@@ -24,8 +24,8 @@ The output is compatible with default Hugo structure and can be used directly in
 ## Installation
 
 ```
-git clone https://github.com/your/repo.git
-cd your-repo
+git clone https://github.com/noorkhafidzin/blogger2hugo.git
+cd blogger2hugo
 pip install -r requirements.txt
 ```
 
@@ -53,12 +53,6 @@ content/
        ├─ index.md
        └─ images/
 ```
-
-## Known Issues
-
-* **Windows Installation**: The script may fail to install on Windows due to dependency compilation issues (specifically lxml).
-
-    Solution: Use Docker installation method instead
 
 ## Conversion Limitations
 
